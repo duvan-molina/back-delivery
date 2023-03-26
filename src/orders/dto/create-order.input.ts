@@ -7,6 +7,10 @@ export class CreateOrderInput {
   @Field(() => ID)
   userId: string;
 
+  @IsNotEmpty()
+  @Field(() => [String])
+  productIds: string[];
+
   @Field({ defaultValue: 'preparing' })
   stateRequested: string;
 

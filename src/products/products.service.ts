@@ -19,8 +19,12 @@ export class ProductsService {
     return this.productsRepository.find();
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} product`;
+  findProductById(productId: string): Promise<Product> {
+    return this.productsRepository.findOne({
+      where: {
+        id: productId,
+      },
+    });
   }
 
   update(id: string, updateProductInput: UpdateProductInput) {

@@ -2,37 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Product {
-  id: ID!
-  title: String!
-  description: String!
-  price: Float!
-  unit: Int
-  slug: String
-  creation_date: DateTime!
-}
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
-
-type ProductsConnection {
-  items: [Product!]!
-  totalCount: Int!
-  hasMore: Boolean!
-}
-
-type Order {
-  id: ID!
-  quantity: Float!
-  stateRequested: String!
-  user: User!
-  userId: ID!
-  creation_date: DateTime!
-  getUser: User!
-}
-
 type User {
   id: ID!
   email: String!
@@ -43,6 +12,38 @@ type User {
   address: String!
   orders: [Order!]
   creation_date: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Order {
+  id: ID!
+  quantity: Float!
+  stateRequested: String!
+  user: User!
+  products: [Product!]!
+  userId: ID!
+  creation_date: DateTime!
+  getUser: User!
+}
+
+type Product {
+  id: ID!
+  title: String!
+  description: String!
+  price: Float!
+  unit: Int
+  slug: String
+  creation_date: DateTime!
+}
+
+type ProductsConnection {
+  items: [Product!]!
+  totalCount: Int!
+  hasMore: Boolean!
 }
 
 type Query {
@@ -89,6 +90,7 @@ input CreateUserInput {
 
 input CreateOrderInput {
   userId: ID!
+  productIds: [String!]!
   stateRequested: String! = "preparing"
   quantity: Int
 }

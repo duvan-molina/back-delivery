@@ -40,7 +40,7 @@ export class ProductsResolver {
 
   @Query(() => Product, { name: 'product' })
   findOne(@Args('productId', { type: () => ID }) productId: string) {
-    return this.productsService.findOne(productId);
+    return this.productsService.findProductById(productId);
   }
 
   @Mutation(() => Product)

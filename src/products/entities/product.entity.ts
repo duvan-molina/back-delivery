@@ -1,8 +1,10 @@
 import { ObjectType, Field, ID, Float, Int } from '@nestjs/graphql';
+import { Order } from 'src/orders/entities/order.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -32,6 +34,13 @@ export class Product {
   @Column({ nullable: true })
   @Field({ nullable: true })
   slug: string;
+
+  @ManyToOne(() => Order, (order) => order.products)
+  order: Order;
+
+  // @Column()
+  // @Field(() => ID)
+  // orderId: string;
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()
