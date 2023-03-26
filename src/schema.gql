@@ -2,12 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Post {
-  id: ID!
-  title: String!
-  content: String!
-}
-
 type Product {
   id: ID!
   title: String!
@@ -29,25 +23,42 @@ type ProductsConnection {
   hasMore: Boolean!
 }
 
-type Query {
-  posts: [Post!]!
-  post(productId: String!): Post!
+type Order {
+  id: ID!
+  quantity: Float!
+  stateRequested: String!
+  user: User!
+  userId: ID!
+  creation_date: DateTime!
+  getUser: User!
+}
 
+type User {
+  id: ID!
+  email: String!
+  password: String!
+  firstName: String!
+  lastName: String!
+  phoneNumber: String!
+  address: String!
+  orders: [Order!]
+  creation_date: DateTime!
+}
+
+type Query {
   """Get all the products"""
   products(limit: Int! = 12, offset: Int! = 0, searchText: String): ProductsConnection!
   product(productId: ID!): Product!
+  orders: [Order!]!
+  order(id: ID!): Order!
 }
 
 type Mutation {
-  createPost(postInput: CreatePostInput!): Post!
   createProduct(createProductInput: CreateProductInput!): Product!
   updateProduct(updateProductInput: UpdateProductInput!): Product!
   removeProduct(id: Int!): Product!
-}
-
-input CreatePostInput {
-  title: String!
-  content: String!
+  createUser(createUserInput: CreateUserInput!): User!
+  createOrder(createOrderInput: CreateOrderInput!): Order!
 }
 
 input CreateProductInput {
@@ -65,4 +76,19 @@ input UpdateProductInput {
   price: Float
   unit: Float
   id: ID!
+}
+
+input CreateUserInput {
+  email: String!
+  password: String!
+  firstName: String!
+  lastName: String!
+  phoneNumber: String!
+  address: String!
+}
+
+input CreateOrderInput {
+  userId: ID!
+  stateRequested: String! = "preparing"
+  quantity: Int
 }
