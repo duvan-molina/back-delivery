@@ -23,10 +23,18 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type ProductsConnection {
+  items: [Product!]!
+  totalCount: Int!
+  hasMore: Boolean!
+}
+
 type Query {
   posts: [Post!]!
   post(productId: String!): Post!
-  products: [Product!]!
+
+  """Get all the products"""
+  products(limit: Int! = 12, offset: Int! = 0, searchText: String): ProductsConnection!
   product(productId: ID!): Product!
 }
 
