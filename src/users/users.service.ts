@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { decodePassword, encryptPassword } from 'src/helpers/encrypt';
 import { Repository } from 'typeorm';
 import { CreateUserInput } from './dto/create-user.input';
 import { User } from './entities/user.entity';
+import UserResponse from './user.types';
 
 @Injectable()
 export class UsersService {
@@ -10,9 +12,77 @@ export class UsersService {
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
-  create(createUserInput: CreateUserInput) {
-    const user = this.userRepository.create(createUserInput);
-    return this.userRepository.save(user);
+  async create(createUserInput: CreateUserInput): Promise<UserResponse> {
+    try {
+      const userFound = await this.userRepository.findOne({
+        where: {
+          email: createUserInput.email,
+        },
+      });
+
+      if (userFound) {
+        return {
+          errors: [
+            {
+              path: 'Mutation create user',
+              messages: 'The email already exists',
+            },
+          ],
+        };
+      }
+
+      const user = this.userRepository.create({
+        ...createUserInput,
+        password: await encryptPassword(createUserInput.password),
+      });
+      const result = await this.userRepository.save(user);
+
+      return {
+        user: result,
+      };
+    } catch (error) {
+      return {
+        errors: [{ path: '', messages: 'Something went wrong' }],
+      };
+    }
+  }
+
+  async loginUser(email: string, password: string): Promise<UserResponse> {
+    const user = await this.userRepository.findOne({
+      where: {
+        email,
+      },
+    });
+
+    if (!user) return null;
+
+    const passwordValid = await decodePassword(password, user.password);
+
+    if (!user) {
+      return {
+        errors: [
+          {
+            path: '',
+            messages: 'User not found',
+          },
+        ],
+      };
+    }
+
+    if (user && passwordValid) {
+      return {
+        user,
+      };
+    }
+
+    return {
+      errors: [
+        {
+          path: '',
+          messages: 'Something went wrong',
+        },
+      ],
+    };
   }
 
   getUser(userId: string): Promise<User> {
@@ -22,4 +92,26 @@ export class UsersService {
       },
     });
   }
+
+  findOneByEmail(email: string): Promise<User> {
+    return this.userRepository.findOne({
+      where: {
+        id: email,
+      },
+    });
+  }
+
+  find(): Promise<User[]> {
+    return this.userRepository.find();
+  }
+
+  // async validate(username: string, password: string): Promise<any> {
+  //   const user = await this.loginUser(username, password);
+  //   if (!user) {
+  //     // throw new UnauthorizedException();
+  //   }
+  //   return {
+  //     user,
+  //   };
+  // }
 }

@@ -50,6 +50,7 @@ type Query {
   """Get all the products"""
   products(limit: Int! = 12, offset: Int! = 0, searchText: String): ProductsConnection!
   product(productId: ID!): Product!
+  findUsers: [User!]!
   orders: [Order!]!
   order(id: ID!): Order!
 }
