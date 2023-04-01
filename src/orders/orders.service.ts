@@ -16,8 +16,14 @@ export class OrdersService {
     private readonly productService: ProductsService,
   ) {}
 
-  async create(createOrderInput: CreateOrderInput): Promise<Order> {
-    const order = this.ordersRepository.create(createOrderInput);
+  async create(
+    createOrderInput: CreateOrderInput,
+    userId: string,
+  ): Promise<Order> {
+    const order = this.ordersRepository.create({
+      ...createOrderInput,
+      userId,
+    });
 
     let products: Product[] | [] = [];
 

@@ -1,12 +1,8 @@
-import { InputType, Int, Field, ID } from '@nestjs/graphql';
+import { InputType, Int, Field } from '@nestjs/graphql';
 import { IsNotEmpty } from 'class-validator';
 
 @InputType()
 export class CreateOrderInput {
-  @IsNotEmpty()
-  @Field(() => ID)
-  userId: string;
-
   @IsNotEmpty()
   @Field(() => [String])
   productIds: string[];
