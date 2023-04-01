@@ -104,14 +104,4 @@ export class UsersService {
   find(): Promise<User[]> {
     return this.userRepository.find();
   }
-
-  // async validate(username: string, password: string): Promise<any> {
-  //   const user = await this.loginUser(username, password);
-  //   if (!user) {
-  //     // throw new UnauthorizedException();
-  //   }
-  //   return {
-  //     user,
-  //   };
-  // }
 }

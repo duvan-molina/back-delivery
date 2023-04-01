@@ -16,28 +16,34 @@ export class OrdersService {
     private readonly productService: ProductsService,
   ) {}
 
-  async create(
-    createOrderInput: CreateOrderInput,
+  async createOrder(
+    createOrderInput: CreateOrderInput[],
     userId: string,
-  ): Promise<Order> {
-    const order = this.ordersRepository.create({
-      ...createOrderInput,
-      userId,
-    });
+  ): Promise<Order[]> {
+    let orders: Order[] | [] = [];
 
-    let products: Product[] | [] = [];
+    for (let i = 0; i < createOrderInput.length; i++) {
+      let products: Product[] | [] = [];
 
-    for (let i = 0; i < createOrderInput.productIds.length; i++) {
-      const result = await this.productService.findProductById(
-        createOrderInput.productIds[i],
-      );
-      products = [...products, result];
+      for (let j = 0; j < createOrderInput[i].productId.length; j++) {
+        const product = await this.productService.findProductById(
+          createOrderInput[i].productId[j],
+        );
+
+        products = [...products, product];
+      }
+
+      const createOrder = this.ordersRepository.create({
+        ...createOrderInput[i],
+        userId,
+        products,
+      });
+
+      const response = await this.ordersRepository.save(createOrder);
+      orders = [...orders, response];
     }
 
-    return this.ordersRepository.save({
-      ...order,
-      products,
-    });
+    return orders;
   }
 
   findAll() {

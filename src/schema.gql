@@ -27,7 +27,6 @@ type Order {
   products: [Product!]!
   userId: ID!
   creation_date: DateTime!
-  getUser: user!
 }
 
 type Product {
@@ -75,7 +74,9 @@ type Mutation {
   createProduct(createProductInput: CreateProductInput!): Product!
   updateProduct(updateProductInput: UpdateProductInput!): Product!
   removeProduct(id: Int!): Product!
-  createOrder(createOrderInput: CreateOrderInput!): Order!
+
+  """create orders"""
+  createOrder(createOrderInput: [CreateOrderInput!]!): [Order!]!
 }
 
 input CreateUserInput {
@@ -105,7 +106,7 @@ input UpdateProductInput {
 }
 
 input CreateOrderInput {
-  productIds: [String!]!
+  productId: [ID!]!
   stateRequested: String! = "preparing"
   quantity: Int
 }

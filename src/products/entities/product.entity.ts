@@ -27,6 +27,9 @@ export class Product {
   @Field(() => Float)
   price: number;
 
+  @ManyToOne(() => Order, (order) => order.products)
+  order: Order;
+
   @Column({ default: 1 })
   @Field(() => Int, { nullable: true })
   unit: number;
@@ -34,13 +37,6 @@ export class Product {
   @Column({ nullable: true })
   @Field({ nullable: true })
   slug: string;
-
-  @ManyToOne(() => Order, (order) => order.products)
-  order: Order;
-
-  // @Column()
-  // @Field(() => ID)
-  // orderId: string;
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()

@@ -13,6 +13,10 @@ export class JwtGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const ctx = GqlExecutionContext.create(context).getContext();
 
+    if (!ctx.req.headers.authorization) {
+      throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
+    }
+
     const authorizationToken = ctx.req.headers.authorization.split(' ')[1];
 
     if (authorizationToken) {
