@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, MiddlewareConsumer } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { GraphQLModule } from '@nestjs/graphql';
@@ -11,6 +11,7 @@ import { OrdersModule } from './orders/orders.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { GalleryModule } from './gallery/gallery.module';
+import { UploadFilesMiddleware } from './auth/jwt.res';
 
 @Module({
   imports: [
@@ -40,4 +41,10 @@ import { GalleryModule } from './gallery/gallery.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(UploadFilesMiddleware)
+      .forRoutes('api/v1/upload-images/:productId');
+  }
+}
