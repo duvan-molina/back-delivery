@@ -1,10 +1,12 @@
 import { ObjectType, Field, ID, Float, Int } from '@nestjs/graphql';
 import { Order } from 'src/orders/entities/order.entity';
+import { Gallery } from 'src/gallery/entities/gallery.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -29,6 +31,10 @@ export class Product {
 
   @ManyToOne(() => Order, (order) => order.products)
   order: Order;
+
+  @OneToMany(() => Gallery, (gallery) => gallery.product, { nullable: true })
+  @Field(() => [Gallery], { nullable: true })
+  gallery: Gallery[];
 
   @Column({ default: 1 })
   @Field(() => Int, { nullable: true })

@@ -16,7 +16,7 @@ export class ProductsService {
   }
 
   findAll() {
-    return this.productsRepository.find();
+    return this.productsRepository.find({ relations: ['gallery'] });
   }
 
   findProductById(productId: string): Promise<Product> {
@@ -24,6 +24,7 @@ export class ProductsService {
       where: {
         id: productId,
       },
+      relations: ['gallery'],
     });
   }
 

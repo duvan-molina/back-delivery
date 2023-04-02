@@ -29,11 +29,18 @@ type Order {
   creation_date: DateTime!
 }
 
+type Gallery {
+  id: ID!
+  imagenUrl: String!
+  product: Product!
+}
+
 type Product {
   id: ID!
   title: String!
   description: String!
   price: Float!
+  gallery: [Gallery!]
   unit: Int
   slug: String
   creation_date: DateTime!

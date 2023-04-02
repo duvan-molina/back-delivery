@@ -10,6 +10,7 @@ import { UsersModule } from './users/users.module';
 import { OrdersModule } from './orders/orders.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { GalleryModule } from './gallery/gallery.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { ConfigModule } from '@nestjs/config';
     ProductsModule,
     UsersModule,
     OrdersModule,
+    GalleryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
