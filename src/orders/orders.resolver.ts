@@ -1,17 +1,7 @@
-import {
-  Resolver,
-  Query,
-  Mutation,
-  Args,
-  ID,
-  ResolveField,
-  Parent,
-  Context,
-} from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, ID, Context } from '@nestjs/graphql';
 import { OrdersService } from './orders.service';
 import { Order } from './entities/order.entity';
 import { CreateOrderInput } from './dto/create-order.input';
-import { User } from 'src/users/entities/user.entity';
 import { UseGuards } from '@nestjs/common';
 import { JwtGuard } from 'src/auth/jwt.guard';
 

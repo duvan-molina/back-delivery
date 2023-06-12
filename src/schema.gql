@@ -29,12 +29,6 @@ type Order {
   creation_date: DateTime!
 }
 
-type Gallery {
-  id: ID!
-  imagenUrl: String!
-  product: Product!
-}
-
 type Product {
   id: ID!
   title: String!
@@ -44,6 +38,12 @@ type Product {
   unit: Int
   slug: String
   creation_date: DateTime!
+}
+
+type Gallery {
+  id: ID!
+  imagenUrl: String!
+  product: Product!
 }
 
 type ProductsConnection {
@@ -66,6 +66,11 @@ type ErrorsType {
   messages: String
 }
 
+type UserResponse {
+  errors: [ErrorsType!]
+  user: UserType
+}
+
 type Query {
   login(email: String!, password: String!): String!
 
@@ -77,7 +82,7 @@ type Query {
 }
 
 type Mutation {
-  createUser(createUserInput: CreateUserInput!): user!
+  createUser(createUserInput: CreateUserInput!): UserResponse!
   createProduct(createProductInput: CreateProductInput!): Product!
   updateProduct(updateProductInput: UpdateProductInput!): Product!
   removeProduct(id: Int!): Product!

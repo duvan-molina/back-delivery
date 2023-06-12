@@ -7,12 +7,15 @@ import GetProductsArgs from './product.args_.type';
 import shuffle from 'src/helpers/shuffle';
 import search from 'src/helpers/search';
 import ProductsConnection from './product.type';
+import { UseGuards } from '@nestjs/common';
+import { JwtGuard } from 'src/auth/jwt.guard';
 
 @Resolver(() => Product)
 export class ProductsResolver {
   constructor(private readonly productsService: ProductsService) {}
 
   @Mutation(() => Product)
+  @UseGuards(JwtGuard)
   createProduct(
     @Args('createProductInput') createProductInput: CreateProductInput,
   ) {
@@ -20,6 +23,7 @@ export class ProductsResolver {
   }
 
   @Query(() => ProductsConnection, { description: 'Get all the products' })
+  @UseGuards(JwtGuard)
   async products(
     @Args()
     { limit, offset, searchText }: GetProductsArgs,
@@ -39,11 +43,13 @@ export class ProductsResolver {
   }
 
   @Query(() => Product, { name: 'product' })
+  @UseGuards(JwtGuard)
   findOne(@Args('productId', { type: () => ID }) productId: string) {
     return this.productsService.findProductById(productId);
   }
 
   @Mutation(() => Product)
+  @UseGuards(JwtGuard)
   updateProduct(
     @Args('updateProductInput') updateProductInput: UpdateProductInput,
   ) {
@@ -54,6 +60,7 @@ export class ProductsResolver {
   }
 
   @Mutation(() => Product)
+  @UseGuards(JwtGuard)
   removeProduct(@Args('id', { type: () => Int }) id: number) {
     return this.productsService.remove(id);
   }

@@ -4,15 +4,17 @@ import { User } from './entities/user.entity';
 import { CreateUserInput } from './dto/create-user.input';
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { UserType } from './user.types';
+import UserResponse, { UserType } from './user.types';
 import * as jwt from 'jsonwebtoken';
 
 @Resolver(() => User)
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
 
-  @Mutation(() => User)
-  createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
+  @Mutation(() => UserResponse)
+  createUser(
+    @Args('createUserInput') createUserInput: CreateUserInput,
+  ): Promise<UserResponse> {
     return this.usersService.create(createUserInput);
   }
 

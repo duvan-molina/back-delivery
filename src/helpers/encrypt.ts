@@ -11,5 +11,3 @@ export const decodePassword = async (
 ) => {
   return await bcrypt.compare(inputPassword, userPassword);
 };
-
-export const SECRET_KEY = 'HELLO_WORLD';
