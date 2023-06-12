@@ -7,47 +7,56 @@ import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
 import { CreateOrderInput } from './dto/create-order.input';
 import { Order } from './entities/order.entity';
+import { OrderedProduct } from './entities/orderedProduct.entity';
 
 @Injectable()
 export class OrdersService {
   constructor(
     @InjectRepository(Order) private ordersRepository: Repository<Order>,
+    @InjectRepository(OrderedProduct)
+    private orderedProductRepository: Repository<OrderedProduct>,
     private readonly userService: UsersService,
     private readonly productService: ProductsService,
   ) {}
 
   async createOrder(
-    createOrderInput: CreateOrderInput[],
+    createOrderInput: CreateOrderInput,
     userId: string,
-  ): Promise<Order[]> {
-    let orders: Order[] | [] = [];
+  ): Promise<Order> {
+    let orderedProductList: Array<OrderedProduct> = [];
 
-    for (let i = 0; i < createOrderInput.length; i++) {
-      let products: Product[] | [] = [];
+    for (let i = 0; i < createOrderInput.products.length; i++) {
+      const { productId, quantity } = createOrderInput.products[i];
+      const product = await this.productService.findProductById(productId);
 
-      for (let j = 0; j < createOrderInput[i].productId.length; j++) {
-        const product = await this.productService.findProductById(
-          createOrderInput[i].productId[j],
-        );
-
-        products = [...products, product];
-      }
-
-      const createOrder = this.ordersRepository.create({
-        ...createOrderInput[i],
-        userId,
-        products,
+      const createOrderedProduct = this.orderedProductRepository.create({
+        quantity,
+        product,
       });
 
-      const response = await this.ordersRepository.save(createOrder);
-      orders = [...orders, response];
+      const orderedProduct = await this.orderedProductRepository.save(
+        createOrderedProduct,
+      );
+
+      orderedProductList = [...orderedProductList, orderedProduct];
     }
 
-    return orders;
+    const createOrder = this.ordersRepository.create({
+      ...createOrderInput,
+      userId,
+      orderedProduct: orderedProductList,
+    });
+
+    const result = await this.ordersRepository.save(createOrder);
+
+    return result;
   }
 
-  findAll() {
-    return this.ordersRepository.find({ relations: ['products'] });
+  async findAll() {
+    const result = await this.ordersRepository.find({
+      relations: ['orderedProduct', 'orderedProduct.product'],
+    });
+    return result;
   }
 
   getUser(userId: string): Promise<User> {

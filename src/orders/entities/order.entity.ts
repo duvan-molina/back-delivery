@@ -1,16 +1,14 @@
-import { ObjectType, Field, Int, ID } from '@nestjs/graphql';
-import { Product } from 'src/products/entities/product.entity';
+import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { User } from 'src/users/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   ManyToOne,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { OrderedProduct } from './orderedProduct.entity';
 
 @Entity()
 @ObjectType()
@@ -18,10 +16,6 @@ export class Order {
   @PrimaryGeneratedColumn('uuid')
   @Field(() => ID)
   id: string;
-
-  @Column({ default: 1 })
-  @Field()
-  quantity: number;
 
   // preparing
   // on the way
@@ -34,9 +28,9 @@ export class Order {
   @Field(() => User)
   user: User;
 
-  @OneToMany(() => Product, (product) => product.order)
-  @Field(() => [Product])
-  products: Product[];
+  @OneToMany(() => OrderedProduct, (ordered) => ordered.order)
+  @Field(() => [OrderedProduct])
+  orderedProduct: OrderedProduct[];
 
   @Column()
   @Field(() => ID)

@@ -4,39 +4,36 @@ import { Order } from './entities/order.entity';
 import { CreateOrderInput } from './dto/create-order.input';
 import { UseGuards } from '@nestjs/common';
 import { JwtGuard } from 'src/auth/jwt.guard';
+import OrderTypes from './order.type';
 
 @Resolver(() => Order)
 export class OrdersResolver {
   constructor(private readonly ordersService: OrdersService) {}
 
-  @Mutation(() => [Order], {
+  @Mutation(() => Order, {
     description: 'create orders',
   })
   @UseGuards(JwtGuard)
   async createOrder(
-    @Args('createOrderInput', { type: () => [CreateOrderInput] })
-    createOrderInput: CreateOrderInput[],
+    @Args('createOrderInput', { type: () => CreateOrderInput })
+    createOrderInput: CreateOrderInput,
     @Context('user')
     user: {
       userId: string;
     },
-  ): Promise<Order[]> {
+  ): Promise<Order> {
     const response = await this.ordersService.createOrder(
       createOrderInput,
       user.userId,
     );
+
     return response;
   }
 
-  @Query(() => [Order], { name: 'orders' })
-  findAll() {
+  @Query(() => [OrderTypes], { name: 'orders' })
+  findAllOrders() {
     return this.ordersService.findAll();
   }
-
-  // @ResolveField(() => User)
-  // getUser(@Parent() order: Order) {
-  //   return this.ordersService.getUser(order.userId);
-  // }
 
   @Query(() => Order, { name: 'order' })
   findOne(@Args('id', { type: () => ID }) id: string) {
